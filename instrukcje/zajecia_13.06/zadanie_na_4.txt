@@ -1,0 +1,24 @@
+1. Zrobi� zadanie na 3.
+
+
+2. Utworzy� nast�puj�ce resty:
+a)
+GET /api/zwierzeta/znajdzStarszeNiz - zwraca list� ZwierzeDTO kt�rych wiek jest wi�kszy ni� parametr wej�ciowy
+in: Integer "wiek"
+out: List<ZwierzeDTO>
+
+b)
+GET /api/zwierzeta/znajdzWgGatunku - zwraca list� ZwierzeDTO kt�rych gatunek jest r�wny parametrowi wej�ciowemu
+in: EGatunek "gatunek"
+out: List<ZwierzeDTO>
+
+c)
+GET /api/zwierzeta/znajdzZwierzetaZImieniemZaczynajacymSieOd - metoda musi ignorowac rozmiar liter
+in: String "partial"
+out: List<ZwierzeNazwaIWiekDTO>
+
+
+3. Struktura nowych DTO:
+ZwierzeNazwaIWiekDTO
+    String nazwa;
+    Integer wiek;

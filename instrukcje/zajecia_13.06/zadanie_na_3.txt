@@ -1,0 +1,61 @@
+1. Utworzyæ encjê:
+ZwierzeOB
+    Long id;
+    Date dataUtworzenia; // (wypelniane new Date() przy tworzeniu nowego rekordu)
+    String nazwa;
+    EGatunek gatunek;
+    EPlec plec;
+    Integer wiek;
+
+
+2. Utworzyæ enumy:
+EGatunek: PIES, KOT, JASZCZURKA
+EPlec: SAMIEC, SAMICA
+
+
+3. Utworzyæ pe³ny CRUD pod œcie¿k¹: /api/zwierzeta
+
+
+4. Zwracana bêdzie klasa:
+ZwierzeDTO
+    String nazwa;
+    EGatunek gatunek;
+    EPlec plec;
+    Integer wiek;
+
+
+5. Dane do zape³nienia bazy (w zadaniu na 5 dane s¹ inne):
+{
+"nazwa":"Azor",
+"gatunek":"PIES",
+"plec":"SAMIEC",
+"wiek":4
+}
+
+{
+"nazwa":"Hañba",
+"gatunek":"PIES",
+"plec":"SAMICA",
+"wiek":3
+}
+
+{
+"nazwa":"Mruczek",
+"gatunek":"KOT",
+"plec":"SAMIEC",
+"wiek":4
+}
+
+{
+"nazwa":"Diabu³",
+"gatunek":"KOT",
+"plec":"SAMIEC",
+"wiek":3
+}
+
+{
+"nazwa":"Zenek",
+"gatunek":"JASZCZURKA",
+"plec":"SAMIEC",
+"wiek":1
+}

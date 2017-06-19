@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+    </head>
+
+    <body>
+        <style type="text/css">
+            #wrap {
+                width:1300px;
+                margin:0 auto;
+            }
+            #left_col {
+                float:left;
+                width:700px;
+            }
+            #right_col {
+                float:right;
+                width:600px;
+            }
+        </style>
+
+        <div id="wrap">
+            <div id="left_col">
+                <span>HOST: <input id="host" type="text" style="width:130px"></span>&nbsp;&nbsp;&nbsp;
+                <span>URL: <input id="url" type="text" style="width:338px"></span>
+                <br>
+                <br>
+                POST BODY:
+                <br>
+                <textarea id="post-body" rows="20" cols="80"></textarea>
+                <br>
+
+                <button onclick="doRestPost()">POST</button>&nbsp;&nbsp;&nbsp;
+                <button onclick="doRestGet()">GET</button>&nbsp;&nbsp;&nbsp;
+                <button onclick="doRestPretty()">Pretty</button>&nbsp;&nbsp;&nbsp;
+                <button onclick="doRestClean()">Wyczyść</button>&nbsp;&nbsp;&nbsp;
+
+                <br>
+                <br>
+                RESPONSE:
+                <br>
+                <textarea id="response" rows="20" cols="80"></textarea>
+            </div>
+            <div id="right_col">
+                STORE: &nbsp;&nbsp;&nbsp;<button onclick="resetStore()" style="color:red">Reset</button>
+                <br>
+                <ul id="req-list" style="max-height:720px;overflow:auto;list-style-type:none;padding:0">
+                </ul>
+            </div>
+        </div>
+
+
+    <script>
+        var HOST = 'http://localhost:8080';
+
+        function httpGet(fullRequestPathWithParams) {
+            var xmlHttp = new XMLHttpRequest();
+            console.info('GET ' + fullRequestPathWithParams);
+            xmlHttp.open('GET', fullRequestPathWithParams, false);
+            xmlHttp.send(null);
+            return xmlHttp.response;
+        }
+
+        function httpPost(fullRequestPath, postData) {
+            var xmlHttp = new XMLHttpRequest();
+            console.info('POST ' + fullRequestPath);
+            xmlHttp.open('POST', fullRequestPath, false);
+            xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            xmlHttp.send(JSON.stringify(postData));
+            return xmlHttp.response;
+        }
+
+        function doRestPost() {
+            document.getElementById('response').value = null;
+            var url = getHost() + getUrl();
+            var response = httpPost(url, getPostBody());
+            if (response == null || response == '') {
+                response = '{}';
+            }
+            document.getElementById('response').value = JSON.stringify(JSON.parse(response), null, 2);
+            storeReq('POST');
+        }
+
+        function doRestGet() {
+            document.getElementById('response').value = null;
+            var url = getHost() + getUrl();
+            var response = httpGet(url);
+            if (response == null || response == '') {
+                response = '{}';
+            }
+            document.getElementById('response').value = JSON.stringify(JSON.parse(response), null, 2);
+            storeReq('GET');
+        }
+
+        function storeReq(method) {
+            var reqId = 'req' + new Date().getTime();
+            var req = {id: reqId, method:method, host:getHost(), url:getUrl(), body:getPostBody()};
+            var reqHash = getReqHash(req);
+            for (var key in localStorage){
+                if (key.match(/req.*/)) {
+                    var storedReq = JSON.parse(localStorage.getItem(key));
+                    if (getReqHash(storedReq) == reqHash) {
+                        deleteReq(storedReq.id);
+                    }
+                }
+            }
+            localStorage.setItem(reqId, JSON.stringify(req));
+            addReqToView(req);
+        }
+
+        function getReqHash(req) {
+            if (req) {
+                return req.method + ';;;' + req.host + ';;;' + req.url + ';;;' + JSON.stringify(req.body);
+            }
+            return null;
+        }
+
+        function addReqToView(req) {
+            var s = '<div style="margin-bottom:10px;border:solid 1px; padding: 2px"><span><b>' + req.method + '</b> ' + req.host + req.url +'</span><br>' +
+                '<span>' + (req.body ? JSON.stringify(req.body, null, 2) : '') + '</span><br>' +
+                '<button onclick="executeReq(\'' + req.id + '\')">Wykonaj</button>&nbsp;&nbsp;&nbsp;' +
+                '<button onclick="loadReq(\'' + req.id + '\')">Wczytaj</button>&nbsp;&nbsp;&nbsp;' +
+                '<button onclick="deleteReq(\'' + req.id + '\')">Usuń</button></div>';
+
+            var li = document.createElement('li');
+            li.id = req.id;
+            li.innerHTML = s;
+            var reqListElement = document.getElementById('req-list');
+            reqListElement.insertBefore(li, reqListElement.firstChild);
+        }
+
+        function deleteReq(reqId) {
+            localStorage.removeItem(reqId);
+            document.getElementById(reqId).remove();
+        }
+
+        function executeReq(reqId) {
+            doRestClean();
+            loadReq(reqId);
+            var req = JSON.parse(localStorage.getItem(reqId));
+            if (req.method == 'GET') {
+                doRestGet();
+            } else {
+                doRestPost();
+            }
+        }
+
+        function loadReq(reqId) {
+            var req = JSON.parse(localStorage.getItem(reqId));
+            document.getElementById('host').value = req.host;
+            document.getElementById('url').value = req.url;
+            document.getElementById('post-body').value = JSON.stringify(req.body, null, 2) != 'null' ? JSON.stringify(req.body, null, 2) : null;
+        }
+
+        JSON.fix = function(obj) {
+            return obj.replace(/(['"])?([a-zA-Z0-9_]+)(['"])? *:/g, '"$2": ');
+        };
+
+        function doRestPretty() {
+            document.getElementById('post-body').value = JSON.stringify(JSON.parse(JSON.fix(document.getElementById('post-body').value)), null, 2);
+        }
+
+        function doRestClean() {
+            document.getElementById('url').value = '/api';
+            document.getElementById('post-body').value = null;
+            document.getElementById('response').value = null;
+        }
+
+        function getUrl() {
+            return document.getElementById('url').value;
+        }
+
+        function getPostBody() {
+            var val = document.getElementById('post-body').value;
+            if (val) {
+                return JSON.parse(JSON.fix(val));
+            } else {
+                return null;
+            }
+        }
+
+        function getHost() {
+            return document.getElementById('host').value;
+        }
+
+        function setInitialUrl() {
+            document.getElementById('url').value = '/api';
+        }
+
+        function setHost() {
+            document.getElementById('host').value = HOST;
+        }
+
+        function displayAllFromStore() {
+            for (var key in localStorage){
+                if (key.match(/req.*/)) {
+                    addReqToView(JSON.parse(localStorage.getItem(key)));
+                }
+            }
+        }
+
+        function resetStore() {
+            for (var key in localStorage){
+                if (key.match(/req.*/)) {
+                    deleteReq(key);
+                }
+            }
+        }
+
+
+
+        setHost();
+        setInitialUrl();
+        displayAllFromStore();
+    </script>
+    </body>
+</html>

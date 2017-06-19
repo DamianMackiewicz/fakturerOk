@@ -1,0 +1,87 @@
+1. Zrobiæ zadanie na 4.
+
+
+2. Utworzyæ encjê (z ewentualnymi polami relacyjnymi):
+OczyOB
+    Long id;
+    String kolorLewegoOka;
+    String kolorPrawegoOka;
+
+
+3. Utworzyæ relacjê
+@OneToOne po stronie ZwierzeOB, wi¹¿¹c¹ OczyOB ze ZwierzeOB
+
+
+4. Utworzyæ:
+a) NoweZwierzeDTO, zgodne z modelem w punkcie 7.
+b) Dostosowaæ /api/zwierzeta/save do przyjêcia NoweZwierzeDTO.
+c) Dostosowaæ serwis do zapisu, tak, aby utrwala³ nowe dane w bazie.
+
+
+5. Utworzyæ nastêpuj¹ce resty:
+GET /api/zwierzeta/znajdzZCoNajmniejJednymOkiemWKolorze
+in: String kolor
+out: List<ZwierzeZOczamiDTO>
+
+POST /api/zwierzeta/znajdzSamcowWKolorzeStarszychNiz
+in: ZwierzeCritDTO
+out: List<ZwierzeOB>
+
+
+6. Struktura nowych DTO:
+ZwierzeZOczamiDTO
+    String nazwa;
+    EGatunek gatunek;
+    String kolorLewegoOka;
+    String kolorPrawegoOka;
+
+ZwierzeCritDTO
+    String kolor;
+    Integer wiek;
+
+
+7. Dane do zape³nienia bazy (inne ni¿ w zadaniu na 3):
+{
+"nazwa":"Azor",
+"gatunek":"PIES",
+"plec":"SAMIEC",
+"wiek":4,
+"kolorLewegoOka":"czarne",
+"kolorPrawegoOka":"czarne"
+}
+
+{
+"nazwa":"Hañba",
+"gatunek":"PIES",
+"plec":"SAMICA",
+"wiek":3,
+"kolorLewegoOka":"niebieskie",
+"kolorPrawegoOka":"niebieskie"
+}
+
+{
+"nazwa":"Mruczek",
+"gatunek":"KOT",
+"plec":"SAMIEC",
+"wiek":4,
+"kolorLewegoOka":"zó³te",
+"kolorPrawegoOka":"niebieskie"
+}
+
+{
+"nazwa":"Diabu³",
+"gatunek":"KOT",
+"plec":"SAMIEC",
+"wiek":3,
+"kolorLewegoOka":"niebieskie",
+"kolorPrawegoOka":"¿ó³te"
+}
+
+{
+"nazwa":"Zenek",
+"gatunek":"JASZCZURKA",
+"plec":"SAMIEC",
+"wiek":1,
+"kolorLewegoOka":"czarne",
+"kolorPrawegoOka":"brak"
+}

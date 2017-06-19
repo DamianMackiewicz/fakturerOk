@@ -1,0 +1,57 @@
+<style type="text/css">
+    #wrap {
+        width:1300px;
+        margin:0 auto;
+    }
+    #left_col {
+        float:left;
+        width:700px;
+    }
+    #right_col {
+        float:right;
+        width:600px;
+    }
+</style>
+
+<div id="wrap">
+    <div id="left_col">
+        <span>HOST: <input id="host" type="text" style="width:130px"></span>&nbsp;&nbsp;&nbsp;
+        <span>URL: <input id="url" type="text" style="width:338px"></span>
+        <br>
+        <br>
+        POST BODY:
+        <br>
+        <textarea id="post-body" rows="20" cols="80"/>
+        <br>
+
+        <button onclick="doRestPost()">POST</button>&nbsp;&nbsp;&nbsp;
+        <button onclick="doRestGet()">GET</button>&nbsp;&nbsp;&nbsp;
+        <button onclick="doRestPretty()">Pretty</button>&nbsp;&nbsp;&nbsp;
+        <button onclick="doRestClean()">Wyczyść</button>&nbsp;&nbsp;&nbsp;
+        <button onclick="incStore()">Inc</button>&nbsp;&nbsp;&nbsp;
+        <button onclick="resetStore()">Reset</button>&nbsp;&nbsp;&nbsp;
+        <button onclick="getStore()">Read</button>&nbsp;&nbsp;&nbsp;
+
+
+        <br>
+        <br>
+        RESPONSE:
+        <br>
+        <textarea id="response" rows="20" cols="80"/>
+    </div>
+    <div id="right_col">
+        STORE: &nbsp;&nbsp;&nbsp;<button onclick="resetStore()" style="color:red">Reset</button>
+        <br>
+        <ul id="req-list" style="max-height:720px;overflow:auto;">
+        </ul>
+    </div>
+</div>
+
+
+<script>
+
+    setHost();
+    setInitialUrl();
+    initStore();
+    displayAllFromStore();
+</script>
